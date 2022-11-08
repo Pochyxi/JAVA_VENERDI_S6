@@ -6,6 +6,7 @@ import com.example.java_venerdi_s5.services.RoleService;
 import com.example.java_venerdi_s5.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
@@ -21,6 +22,9 @@ public class UserController {
 
     @Autowired
     RoleService rs;
+
+    @Autowired
+    PasswordEncoder encoder;
 
     @GetMapping("/all-users")
     @PreAuthorize( "hasRole('ADMIN')" )
@@ -40,7 +44,8 @@ public class UserController {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setFullName(full_name);
-        newUser.setPassword(password);
+        String hashedPassword = encoder.encode(password);
+        newUser.setPassword(hashedPassword);
         newUser.setEmail(email);
         newUser.setActive( true );
 
